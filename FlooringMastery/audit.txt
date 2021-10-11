@@ -1,0 +1,19 @@
+09-10-2021 23:42:26 : List of orders on 2013-06-01 loaded.
+09-10-2021 23:42:32 : List of orders on 2021-01-01 loaded.
+10-10-2021 00:39:23 : The list of product types is loaded.
+10-10-2021 00:42:07 : The list of product types is loaded.
+10-10-2021 00:45:50 : The list of product types is loaded.
+10-10-2021 00:47:16 : The list of product types is loaded.
+10-10-2021 00:47:39 : The list of orders on 2021-05-11 is loaded.
+10-10-2021 00:48:43 : The list of product types is loaded.
+10-10-2021 00:53:26 : The list of orders on 2013-06-01 is loaded.
+10-10-2021 00:54:38 : The list of orders on 2013-06-01 is loaded.
+10-10-2021 00:56:08 : The list of orders on 2013-06-01 is loaded.
+10-10-2021 00:56:50 : The list of orders on 2013-06-01 is loaded.
+10-10-2021 00:57:25 : The list of orders on 2021-01-01 is loaded.
+10-10-2021 00:59:03 : The list of orders on 2013-06-01 is loaded.
+10-10-2021 00:59:23 : The list of product types is loaded.
+10-10-2021 01:01:42 : The list of orders on 2021-01-01 is loaded.
+10-10-2021 01:03:31 : The list of product types is loaded.
+10-10-2021 01:03:39 : The list of orders on 2013-06-01 is loaded.
+10-10-2021 01:03:50 : The list of orders on 2021-01-01 is loaded.
