@@ -56,6 +56,7 @@ class FlooringTaxDaoImplTest {
 		Tax testTax2 = testTaxDao.getParticularTax(state2);
 		//assert
 		assertEquals("TX", testTax1.getState());
+		assertEquals("Texas", testTax1.getStateName());
 		assertEquals("WA", testTax2.getState());
 		
 		/*--NEGATIVE--*/

@@ -117,6 +117,11 @@ public class UserIOConsoleImpl implements UserIO{
 	}
 
 	@Override
+	public void print(BigDecimal money) {
+		System.out.println(money);
+	}
+	
+	@Override
 	public BigDecimal readBigDecimal(String prompt) {
 		while (true) {
             try {
@@ -125,11 +130,6 @@ public class UserIOConsoleImpl implements UserIO{
                 this.print("Input error. Please try again.");
             }
         }
-	}
-
-	@Override
-	public void print(BigDecimal money) {
-		System.out.println(money);
 	}
 	
 	@Override
@@ -152,6 +152,23 @@ public class UserIOConsoleImpl implements UserIO{
 		}
 	}
 
-	
+	@Override
+	public LocalDate readLocalDate(String prompt, LocalDate min) {
+		LocalDate result;
+		while(true) {
+			do {
+				result = readLocalDate(prompt);
+			}while (result.isBefore(min));
+			return result;
+		}
+	}
+
+	@Override
+	public char readChar(String prompt) {
+		System.out.println(prompt);
+		return scan.nextLine().charAt(0);
+	}
+
+		
 
 }

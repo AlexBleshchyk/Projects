@@ -23,7 +23,9 @@ public interface UserIO {
     long readLong(String prompt);
 
     long readLong(String prompt, long min, long max);
-
+    
+    char readChar(String prompt);
+    
     String readString(String prompt);
     
     BigDecimal readBigDecimal(String prompt);
@@ -33,5 +35,7 @@ public interface UserIO {
 	void print(BigDecimal money);
 	
 	LocalDate readLocalDate(String prompt);
+	
+	LocalDate readLocalDate(String prompt, LocalDate min);
     
 }

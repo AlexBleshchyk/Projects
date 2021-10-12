@@ -9,7 +9,9 @@ public interface FlooringOrderDao {
 	
 	List<Order> getOrderList(LocalDate orderDate) throws FlooringPersistenceException;
 	
+	List<Order> getCurrentOrdersList();
+	
 	Order getParticularOrder(LocalDate orderDate, Integer orderNumber) throws FlooringPersistenceException;
 	
-	Order addOrder(Integer orderNumber);
+	Order addOrder(Integer orderNumber, Order order, LocalDate date);
 }

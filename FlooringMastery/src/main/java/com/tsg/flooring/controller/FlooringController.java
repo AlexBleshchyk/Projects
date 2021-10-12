@@ -1,5 +1,6 @@
 package com.tsg.flooring.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,10 @@ import org.springframework.stereotype.Component;
 import com.tsg.flooring.dao.FlooringPersistenceException;
 import com.tsg.flooring.dto.Order;
 import com.tsg.flooring.dto.Product;
+import com.tsg.flooring.dto.Tax;
 import com.tsg.flooring.service.FlooringServiceLayer;
+import com.tsg.flooring.service.NoProductException;
+import com.tsg.flooring.service.NoStateException;
 import com.tsg.flooring.ui.FlooringView;
 
 /**
@@ -25,7 +29,7 @@ public class FlooringController {
 		this.service = service;
 	}
 	
-	public void run() throws FlooringPersistenceException {
+	public void run() throws FlooringPersistenceException, NoStateException, NoProductException {
 		boolean keepGoing = true;
 		int selection = 0;
 		
@@ -39,8 +43,20 @@ public class FlooringController {
 				view.printWait();
 				break;
 			case 2:
-				List<Product> products = service.getProductList();
-				view.printProductList(products);
+				List<Product> prod = service.getProductList();
+				List<Tax> tax = service.getTaxList();
+				view.printProductList(prod);       //product list
+				view.printAvailableStates(tax);    // states
+				
+				LocalDate date = view.dateForNewOrder(); // ask date
+				Order newOrder = service.createOrder(date, view.getNewOrderInfo(prod, tax)); // create new order
+				
+				view.printOrder(newOrder); //display new order
+				
+				Character placeSelection = view.getSelectionPlaceOrder(); // ask if want place an order
+							
+				boolean place = service.placeOrder(date, newOrder.getOrderNumber(), newOrder, placeSelection); //placing of order
+				view.printAddingResult(place); // placing result 
 				view.printWait();
 				break;
 			case 3:
@@ -59,4 +75,6 @@ public class FlooringController {
 			}
 		}
 	}
+	
+	
 }

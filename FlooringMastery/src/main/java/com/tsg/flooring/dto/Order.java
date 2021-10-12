@@ -23,6 +23,9 @@ public class Order {
 	public Order(Integer orderNumber) {
 	}
 	
+	public Order() {
+	}
+
 	public Integer getOrderNumber() {
 		return orderNumber;
 	}
