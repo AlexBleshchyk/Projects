@@ -46,6 +46,12 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 		auditDao.writeAuditEntry("The list of orders on " + orderDate + " is loaded.");
 		return orderDao.getOrderList(orderDate);
 	}
+	
+	@Override
+	public Order getParticularOrder(LocalDate date, Integer ordNum) throws FlooringPersistenceException {
+		Order partOrder= orderDao.getParticularOrder(date, ordNum);
+		return partOrder;
+	}
 
 	@Override
 	public List<Product> getProductList() throws FlooringPersistenceException {
@@ -58,7 +64,8 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 		auditDao.writeAuditEntry("The list of taxes is loaded.");
 		return taxDao.getTaxList();
 	}
-
+	
+	/*------------------ADD---------------------------*/
 	@Override
 	public Order createOrder(LocalDate date,Order order) throws FlooringPersistenceException, NoStateException, NoProductException{
 		Order currOrder = order;
@@ -101,15 +108,17 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 		BigDecimal total = materialCost.add(laborCost).add(tax).setScale(2,RoundingMode.HALF_UP);
 		currOrder.setTotal(total);
 		
+		auditDao.writeAuditEntry("Order #" + order.getOrderNumber() + " on " + date + " is created. ");
 		return currOrder;
 	}
-
+	/*-----------------------PLACE--------------------------*/
 	@Override
-	public boolean placeOrder(LocalDate date, Integer num, Order order, Character select) {
+	public boolean placeOrder(LocalDate date, Integer num, Order order, Character select) throws FlooringPersistenceException {
 		switch(select) {
 		case 'Y':
 		case 'y':
 			orderDao.addOrder(num, order, date);
+			auditDao.writeAuditEntry("Order #" + order.getOrderNumber() + " on " + date +" is placed.");
 			return true;
 		case 'N':
 		case 'n':
@@ -117,23 +126,60 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 		default:
 			return false;
 		}
+	}
+	
+	/*------------------EDIT---------------------------------------*/
+	@Override
+	public Order editOrder(Integer ordNumber, Order order, LocalDate date) throws NoProductException {
+		Order currOrder = order;
 		
+		BigDecimal taxeRate = taxDao.getParticularTax(currOrder.getState()).getTaxRate(); 
+		BigDecimal costPerSqFt;
+		try {
+			costPerSqFt = productDao.getParticularProduct(currOrder.getProductType()).getCostPerSquareFoot();
+		}catch(NullPointerException e) {
+			throw new NoProductException("There is no such product type ");
+		}
+		BigDecimal laborCostPerSqFt = productDao.getParticularProduct(currOrder.getProductType()).getLaborCostPerSquareFoot();
 		
+		currOrder.setTaxRate(taxeRate);
+		currOrder.setCostPerSquareFoot(costPerSqFt);
+		currOrder.setLaborCostPerSquareFoot(laborCostPerSqFt);
+		
+		BigDecimal materialCost = currOrder.getArea().multiply(costPerSqFt).setScale(2, RoundingMode.HALF_UP);
+		currOrder.setMaterialCost(materialCost);
+		
+		BigDecimal laborCost = currOrder.getArea().multiply(laborCostPerSqFt).setScale(2, RoundingMode.HALF_UP);
+		currOrder.setLaborCost(laborCost);
+		
+		BigDecimal tax = materialCost.add(laborCost).multiply(taxeRate.divide(new BigDecimal("100"))).setScale(2, RoundingMode.HALF_UP);
+		currOrder.setTax(tax);
+		
+		BigDecimal total = materialCost.add(laborCost).add(tax).setScale(2,RoundingMode.HALF_UP);
+		currOrder.setTotal(total);
+		return currOrder;
+	}
+	
+	@Override
+	public boolean replaceEditedOrder(LocalDate date, Integer num, Order order, Character select) throws FlooringPersistenceException {
+		switch(select) {
+		case 'Y':
+		case 'y':
+			orderDao.editOrder(num, order, date);
+			auditDao.writeAuditEntry("Order #" + order.getOrderNumber() + " on " + date +" is edited.");
+			return true;
+		case 'N':
+		case 'n':
+			return false;
+		default:
+			return false;
+		}
 	}
 
 	
 
-//	switch(selection) {
-//	case 'Y':
-//	case 'y':
-//		break;
-//	case 'N':
-//	case 'n':
-//		break;
-//	default:
-//		selection = getSelectionPlaceOrder();
-//	}
 	
+
 
 
 	

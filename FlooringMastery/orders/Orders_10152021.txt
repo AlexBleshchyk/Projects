@@ -1,0 +1,4 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+1,Aalex,ON,11.00,Wood,300,5.15,4.75,1545.00,1425.00,326.70,3296.70
+2,Tom,TX,4.45,Tile,200,3.50,4.15,700.00,830.00,68.09,1598.09
+3,Sam,KY,6.00,Laminate,500,1.75,2.10,875.00,1050.00,115.50,2040.50

@@ -81,8 +81,35 @@ class FlooringOrderDaoImplTest {
 		//act
 		Order testOrder2 = testOrderDao.getParticularOrder(ld2, 1);
 		//assert
-		assertNull(testOrder2);
-		
-		
+		assertNull(testOrder2);	
 	}
+	
+	@Test
+	void testGetCurrentOrderList() throws FlooringPersistenceException {
+		//arrange
+		LocalDate ld1 = LocalDate.parse("2013-06-01");
+		testOrderDao.getOrderList(ld1);
+		//act
+		List<Order> curList = testOrderDao.getCurrentOrdersList();
+		//assert
+		assertNotNull(curList);
+		assertEquals(2, curList.size());
+		assertEquals(1, curList.get(0).getOrderNumber());
+		assertEquals(2, curList.get(1).getOrderNumber());
+	}
+	
+	@Test
+	void testAddOrder() throws FlooringPersistenceException {
+		//arrange
+		LocalDate ld = LocalDate.parse("2013-06-01");
+		Order testOrder = testOrderDao.getParticularOrder(ld, 1);
+		//act
+		Order addedOrder = testOrderDao.addOrder(testOrder.getOrderNumber(), testOrder, ld);
+		//assert
+		assertNotNull(addedOrder);
+	}
+	
+	
+	
+	
 }

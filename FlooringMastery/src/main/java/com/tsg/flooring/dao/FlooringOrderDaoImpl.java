@@ -30,7 +30,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 	
 	private Map<Integer, Order> ordersOnDate = new HashMap<>();
 	
-	/*--GET ORDERS LIST BY DATE--*/
+	/*---------get ORDERS LIST by date------------*/
 	@Override
 	public List<Order> getOrderList(LocalDate orderDate) throws FlooringPersistenceException{
 		ordersOnDate.clear();
@@ -38,13 +38,13 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		return new ArrayList<Order>(ordersOnDate.values());
 	}
 	
-	/*---list of current orders(in memory)*/
+	/*---------LIST of current orders(in memory)-----------*/
 	@Override
 	public List<Order> getCurrentOrdersList() {
 		return new ArrayList<>(ordersOnDate.values());
 	}
 
-	/*---GET PARTICULAR ORDER--- */
+	/*-------------get PARTICULAR ORDER------------ */
 	@Override
 	public Order getParticularOrder(LocalDate orderDate, Integer orderNumber) throws FlooringPersistenceException {
 		ordersOnDate.clear();
@@ -52,13 +52,24 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		return ordersOnDate.get(orderNumber);
 	}
 	
-	/*----ADD ORDER----*/
+	/*------------ADD ORDER---------------------*/
 	@Override
 	public Order addOrder(Integer orderNumber, Order order, LocalDate date) {
 		Order addedOrder = ordersOnDate.put(orderNumber, order);
 		writeOrder(date);
 		return addedOrder;
 	}
+	
+	/*------------EDIT---------------*/
+	@Override
+	public Order editOrder(Integer orderNumber, Order order, LocalDate date) throws FlooringPersistenceException {
+		loadOrders(date);
+		Order editedOrder = ordersOnDate.replace(orderNumber, order);
+		writeOrder(date);
+		return editedOrder;
+	}
+	
+	
 	
 	/*--UNMARSHAL--*/
 	private Order unmarshalOrder(String orderAsText) {
@@ -157,6 +168,8 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		out.close();
 		
 	}
+
+	
 
 
 

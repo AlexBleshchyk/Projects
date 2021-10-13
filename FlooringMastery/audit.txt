@@ -1,2 +1,65 @@
 11-10-2021 22:56:04 : The list of orders on 2021-12-12 is loaded.
 11-10-2021 22:56:13 : The list of orders on 2013-06-01 is loaded.
+12-10-2021 22:05:50 : The list of orders on 2021-12-12 is loaded.
+12-10-2021 22:05:57 : The list of orders on 2013-06-01 is loaded.
+12-10-2021 22:06:13 : The list of orders on 2013-06-02 is loaded.
+12-10-2021 22:06:15 : The list of product types is loaded.
+12-10-2021 22:06:15 : The list of taxes is loaded.
+12-10-2021 22:07:56 : The list of orders on 2021-10-15 is loaded.
+12-10-2021 23:53:22 : The list of product types is loaded.
+12-10-2021 23:53:22 : The list of taxes is loaded.
+12-10-2021 23:53:29 : The list of orders on 2021-12-12 is loaded.
+13-10-2021 00:06:53 : The list of product types is loaded.
+13-10-2021 00:06:53 : The list of taxes is loaded.
+13-10-2021 00:06:59 : The list of orders on 2012-10-12 is loaded.
+13-10-2021 00:07:05 : The list of product types is loaded.
+13-10-2021 00:07:05 : The list of taxes is loaded.
+13-10-2021 00:07:17 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:09:31 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:09:34 : The list of product types is loaded.
+13-10-2021 00:09:34 : The list of taxes is loaded.
+13-10-2021 00:10:00 : Order #2 on 2021-10-15 is created. 
+13-10-2021 00:10:02 : Order #2 on 2021-10-15 is placed.
+13-10-2021 00:10:10 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:10:15 : The list of product types is loaded.
+13-10-2021 00:10:15 : The list of taxes is loaded.
+13-10-2021 00:10:20 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:14:55 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:14:58 : The list of product types is loaded.
+13-10-2021 00:14:58 : The list of taxes is loaded.
+13-10-2021 00:15:02 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:15:23 : Order #1 on 2021-10-15 is edited.
+13-10-2021 00:15:29 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:17:34 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:17:36 : The list of product types is loaded.
+13-10-2021 00:17:36 : The list of taxes is loaded.
+13-10-2021 00:17:40 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:23:10 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:23:14 : The list of product types is loaded.
+13-10-2021 00:23:14 : The list of taxes is loaded.
+13-10-2021 00:23:17 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:24:46 : The list of product types is loaded.
+13-10-2021 00:24:46 : The list of taxes is loaded.
+13-10-2021 00:24:50 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:25:03 : Order #1 on 2021-10-15 is edited.
+13-10-2021 00:25:10 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:25:45 : The list of product types is loaded.
+13-10-2021 00:25:45 : The list of taxes is loaded.
+13-10-2021 00:26:05 : The list of product types is loaded.
+13-10-2021 00:26:05 : The list of taxes is loaded.
+13-10-2021 00:26:08 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:26:19 : Order #1 on 2021-10-15 is edited.
+13-10-2021 00:26:23 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:27:30 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:28:21 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:32:51 : The list of product types is loaded.
+13-10-2021 00:32:51 : The list of taxes is loaded.
+13-10-2021 00:32:56 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:33:19 : Order #1 on 2021-10-15 is edited.
+13-10-2021 00:33:23 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:34:40 : The list of product types is loaded.
+13-10-2021 00:34:40 : The list of taxes is loaded.
+13-10-2021 00:35:03 : Order #3 on 2021-10-15 is created. 
+13-10-2021 00:35:08 : Order #3 on 2021-10-15 is placed.
+13-10-2021 00:35:13 : The list of orders on 2021-10-15 is loaded.
+13-10-2021 00:36:28 : The list of orders on 2021-10-15 is loaded.
