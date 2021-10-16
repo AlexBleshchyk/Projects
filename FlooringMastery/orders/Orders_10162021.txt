@@ -1,0 +1,4 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+1,John,ON,11.00,Laminate,200,1.75,2.10,350.00,420.00,84.70,854.70
+2,John,ON,11.00,Laminate,200,1.75,2.10,350.00,420.00,84.70,854.70
+3,John,ON,11.00,Laminate,200,1.75,2.10,350.00,420.00,84.70,854.70

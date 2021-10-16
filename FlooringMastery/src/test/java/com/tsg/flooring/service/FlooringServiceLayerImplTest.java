@@ -2,7 +2,10 @@ package com.tsg.flooring.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +15,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.tsg.flooring.FlooringAuditDaoStubImpl;
+import com.tsg.flooring.dao.FlooringAuditDao;
 import com.tsg.flooring.dao.FlooringOrderDaoImpl;
 import com.tsg.flooring.dao.FlooringPersistenceException;
 import com.tsg.flooring.dao.FlooringProductDao;
@@ -28,6 +33,7 @@ class FlooringServiceLayerImplTest {
 	private static FlooringTaxDao testTaxDao;
 	private static FlooringOrderDaoImpl testOrderDao;
 	private static FlooringProductDao testProductDao;
+	private static FlooringAuditDao testAuditDao;
 	
 	
 	public static final String AUDIT_FILE = "test_audit.txt"; 
@@ -45,51 +51,123 @@ class FlooringServiceLayerImplTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		testService = new FlooringServiceLayerImpl();
 		testTaxDao = new FlooringTaxDaoImpl();
 		testProductDao = new FlooringProductDaoImpl();
 		testOrderDao = new FlooringOrderDaoImpl();
+		testAuditDao = new FlooringAuditDaoStubImpl();
+		testService = new FlooringServiceLayerImpl(testAuditDao, testOrderDao, testProductDao, testTaxDao);
 	}
 	@AfterEach
 	void tearDown() throws Exception {
 	}
 
 	@Test
+	void testGetOrderListByDate() throws FlooringPersistenceException {
+		//arrange
+		LocalDate ld = LocalDate.parse("2021-10-15");
+		//act
+		List<Order> testOrderList = testService.getOrderListByDate(ld);
+		//assert
+		assertNotNull(testOrderList);
+	}
+	
+	@Test
+	void testGetParticularOrder() throws FlooringPersistenceException {
+		//arrange
+		LocalDate ld = LocalDate.parse("2021-10-15");
+		//act
+		Order testOrder = testService.getParticularOrder(ld, 1);
+		//assert
+		assertNotNull(testOrder);
+	}
+	
+	@Test
 	void testGetProductList() throws FlooringPersistenceException {
 		//act
-		List<Product> testList = testProductDao.getProductList();
+		List<Product> testList = testService.getProductList();
 		//assert
 		assertNotNull(testList);
 		assertFalse(testList.isEmpty());
 	}
 	
 	@Test
-	void testGetTaxList() {
-		List<Tax> testTaxList = testTaxDao.getTaxList();
+	void testGetTaxList() throws FlooringPersistenceException {
+		List<Tax> testTaxList = testService.getTaxList();
 		assertNotNull(testTaxList);
 		assertFalse(testTaxList.isEmpty());
 	}
 	
 	@Test
-	void testCreateOrder() throws FlooringPersistenceException, NoStateException, NoProductException {
+	void testCreatePlaceOrder() throws FlooringPersistenceException, NoStateException, NoProductException {
 		//arrange
-		
-		//Map<Integer, Order> ordersOnDate = new HashMap<>();
-		
-		Order testNewOrder = new Order();
-		testNewOrder.setCustomerName("Alex");
-		testNewOrder.setState("CA");
-		testNewOrder.setProductType("Wood");
-		testNewOrder.setArea(new BigDecimal("120"));
-		LocalDate ld = LocalDate.parse("2021-12-12");
+		LocalDate addDate = LocalDate.now().plusDays(1);
+		Order testOrder = new Order();
+		testOrder.setOrderNumber(1);
+		testOrder.setCustomerName("John");
+		testOrder.setProductType("Laminate");
+		testOrder.setState("ON");
+		testOrder.setArea(new BigDecimal("200"));
+		testOrder.setTaxRate(new BigDecimal("11"));
+		testOrder.setCostPerSquareFoot(new BigDecimal("2"));
+		testOrder.setLaborCostPerSquareFoot(new BigDecimal("3"));
+		testOrder.setMaterialCost(new BigDecimal("875"));
+		testOrder.setLaborCost(new BigDecimal("1050"));
+		testOrder.setTax(new BigDecimal("211"));
+		testOrder.setTotal(new BigDecimal("2200"));		
 		//act
-		testOrderDao.getOrderList(ld);
-		Order createdOrder = testService.createOrder(ld, testNewOrder);
+		Order createdOrder = testService.createOrder(addDate, testOrder);
+		boolean placeResult = testService.placeOrder(addDate, createdOrder.getOrderNumber(), createdOrder, 'y');
 		//assert
 		assertNotNull(createdOrder);
-		
+		assertEquals(testOrder.getCustomerName(), createdOrder.getCustomerName());
+		assertTrue(placeResult);
 	}
-
+	
+	@Test
+	void testEditReplaceOrder() throws NoProductException, FlooringPersistenceException {
+		//arrange
+		LocalDate editDate = LocalDate.now().plusDays(1);
+		Order testOrder = new Order();
+		testOrder.setOrderNumber(1);
+		testOrder.setCustomerName("John");
+		testOrder.setProductType("Laminate");
+		testOrder.setState("ON");
+		testOrder.setArea(new BigDecimal("200"));
+		testOrder.setTaxRate(new BigDecimal("11"));
+		testOrder.setCostPerSquareFoot(new BigDecimal("2"));
+		testOrder.setLaborCostPerSquareFoot(new BigDecimal("3"));
+		testOrder.setMaterialCost(new BigDecimal("875"));
+		testOrder.setLaborCost(new BigDecimal("1050"));
+		testOrder.setTax(new BigDecimal("211"));
+		testOrder.setTotal(new BigDecimal("2200"));
+		//act
+		Order editedOrder = testService.editOrder(testOrder.getOrderNumber(), testOrder, editDate);
+		boolean replaceResult = testService.replaceEditedOrder(editDate, editedOrder.getOrderNumber(), editedOrder, 'y');
+		//assert
+		assertNotNull(editedOrder);
+		assertEquals(testOrder.getCustomerName(), editedOrder.getCustomerName());
+		assertTrue(replaceResult);
+	}
+	
+	@Test
+	void testRemoveOrder() throws FlooringPersistenceException {
+		//arrange
+		LocalDate removeDate = LocalDate.parse("2021-10-16");
+		int num = testService.getOrderListByDate(removeDate).size();
+		Order remOrder = testService.getParticularOrder(removeDate, num);
+		//act
+		boolean removeResult = testService.removeOrder(removeDate, num, remOrder, 'y');
+		//assert
+		assertTrue(removeResult);
+	}
+	
+	@Test
+	void testExportData() throws FileNotFoundException, FlooringPersistenceException {
+		//act
+		boolean exportResult = testService.exportData('y');
+		//assert
+		assertTrue(exportResult);
+	}
 	
 	
 	

@@ -1,5 +1,6 @@
 package com.tsg.flooring.dao;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,4 +17,8 @@ public interface FlooringOrderDao {
 	Order addOrder(Integer orderNumber, Order order, LocalDate date);
 	
 	Order editOrder(Integer orderNumber, Order order, LocalDate date) throws FlooringPersistenceException;
+	
+	boolean removeOrder(Integer orderNumber, Order order, LocalDate date) throws FlooringPersistenceException;
+	
+	void dataExport() throws FileNotFoundException;
 }

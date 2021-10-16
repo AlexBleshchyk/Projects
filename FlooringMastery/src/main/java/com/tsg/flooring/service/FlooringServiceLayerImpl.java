@@ -1,5 +1,6 @@
 package com.tsg.flooring.service;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -64,6 +65,7 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 		auditDao.writeAuditEntry("The list of taxes is loaded.");
 		return taxDao.getTaxList();
 	}
+/*------------------------------------------------------------------------------------------------------------------------------*/	
 	
 	/*------------------ADD---------------------------*/
 	@Override
@@ -111,7 +113,7 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 		auditDao.writeAuditEntry("Order #" + order.getOrderNumber() + " on " + date + " is created. ");
 		return currOrder;
 	}
-	/*-----------------------PLACE--------------------------*/
+	/*-----------------------PLACE--NEW--CREATED--ORDER----------------------*/
 	@Override
 	public boolean placeOrder(LocalDate date, Integer num, Order order, Character select) throws FlooringPersistenceException {
 		switch(select) {
@@ -122,11 +124,14 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 			return true;
 		case 'N':
 		case 'n':
+			auditDao.writeAuditEntry("The operation was canceled.");
 			return false;
 		default:
 			return false;
 		}
 	}
+/*-------------------------------------------------------------------------------------------------------------------------------------*/
+	
 	
 	/*------------------EDIT---------------------------------------*/
 	@Override
@@ -159,7 +164,7 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 		currOrder.setTotal(total);
 		return currOrder;
 	}
-	
+
 	@Override
 	public boolean replaceEditedOrder(LocalDate date, Integer num, Order order, Character select) throws FlooringPersistenceException {
 		switch(select) {
@@ -170,11 +175,53 @@ public class FlooringServiceLayerImpl implements FlooringServiceLayer{
 			return true;
 		case 'N':
 		case 'n':
+			auditDao.writeAuditEntry("The operation was canceled.");
 			return false;
 		default:
 			return false;
 		}
 	}
+/*-------------------------------------------------------------------------------------------------------------------------------*/
+	
+	/*------------------------REMOVE-------------------------------*/
+	
+	@Override
+	public boolean removeOrder(LocalDate date, Integer number, Order order, Character select) throws FlooringPersistenceException {
+		switch(select) {
+		case 'Y':
+		case 'y':
+			orderDao.removeOrder(number, order, date);
+			auditDao.writeAuditEntry("Order #" + order.getOrderNumber() + " on " + date +" is removed.");
+			return true;
+		case 'N':
+		case 'n':
+			auditDao.writeAuditEntry("The operation was canceled.");
+			return false;
+		default:
+			return false;
+		}
+	}
+/*-------------------------------------------------------------------------------------------------------------------------------*/
+	/*---------------------EXPORT--------------------------------*/
+
+	@Override
+	public boolean exportData(Character select) throws FlooringPersistenceException, FileNotFoundException {
+		switch(select) {
+		case 'Y':
+		case 'y':
+			orderDao.dataExport();;
+			auditDao.writeAuditEntry("Data was exported");
+			return true;
+		case 'N':
+		case 'n':
+			auditDao.writeAuditEntry("The operation was canceled.");
+			return false;
+		default:
+			return false;
+		}
+	}
+	
+	
 
 	
 

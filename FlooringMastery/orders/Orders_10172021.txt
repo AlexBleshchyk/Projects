@@ -1,2 +1,2 @@
 OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
-1,Alex,ON,11.00,Wood,300,5.15,4.75,1545.00,1425.00,326.70,3296.70
+1,Alexander,KY,6.00,Carpet,250,2.25,2.10,562.50,525.00,65.25,1152.75

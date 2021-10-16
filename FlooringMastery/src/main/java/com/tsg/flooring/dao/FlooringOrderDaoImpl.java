@@ -1,6 +1,7 @@
 package com.tsg.flooring.dao;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -26,6 +27,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 	UserIO io = new UserIOConsoleImpl();
 	
 	private String ORDER_FILE;
+	private static final String BACKUP_FILE = "Backup/DataExport.txt";
 	private static final String DELIMITER = ",";
 	
 	private Map<Integer, Order> ordersOnDate = new HashMap<>();
@@ -52,7 +54,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		return ordersOnDate.get(orderNumber);
 	}
 	
-	/*------------ADD ORDER---------------------*/
+	/*----------------------ADD ORDER------------------------*/
 	@Override
 	public Order addOrder(Integer orderNumber, Order order, LocalDate date) {
 		Order addedOrder = ordersOnDate.put(orderNumber, order);
@@ -60,7 +62,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		return addedOrder;
 	}
 	
-	/*------------EDIT---------------*/
+	/*----------------------EDIT--------------------------*/
 	@Override
 	public Order editOrder(Integer orderNumber, Order order, LocalDate date) throws FlooringPersistenceException {
 		loadOrders(date);
@@ -69,9 +71,23 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		return editedOrder;
 	}
 	
+	/*----------------------REMOVE-------------------------*/
+	@Override
+	public boolean removeOrder(Integer orderNumber, Order order, LocalDate date) throws FlooringPersistenceException {
+		loadOrders(date);
+		boolean removedOrder = ordersOnDate.remove(orderNumber, order);
+		writeOrder(date);
+		return removedOrder;
+	}
 	
-	
-	/*--UNMARSHAL--*/
+	/*----------------------EXPORT------------------------------------*/
+	@Override
+	public void dataExport() throws FileNotFoundException {
+		dataReadWrite();
+	}
+
+/*----------------------------------------------------------PRIVATE--METHODS-------------------------------------------------------------------------*/
+	/*------------UNMARSHALL--------------------*/
 	private Order unmarshalOrder(String orderAsText) {
 		String[] orderTokens = orderAsText.split(DELIMITER);
 		Integer orderNumber = Integer.parseInt(orderTokens[0]);
@@ -92,7 +108,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		return orderFromFile;
 	}
 	
-	/*--LOAD ORDERS from file into memory--*/
+	/*-------LOAD ORDERS from file into memory---------*/
 	private void loadOrders(LocalDate orderDate) throws FlooringPersistenceException {
 		Scanner scan = null;
 		DateTimeFormatter myFormat = DateTimeFormatter.ofPattern("MMddyyyy");
@@ -102,7 +118,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 			scan = new Scanner(new BufferedReader(new FileReader(ORDER_FILE))); 
 		}catch(FileNotFoundException e) {
 			if(scan == null) {
-				io.print("\nThere are no orders for this date.");
+				io.print("\nThere are no orders for this date[" + orderDate + "].");
 				return;
 			}
 		}
@@ -118,7 +134,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		}
 	}
 	
-	/*---MARSHAL--*/
+	/*---------------MARSHALL-------------------------------------*/
 	private String marshal(Order adOrder) {
 		String orderAsText = adOrder.getOrderNumber() + DELIMITER;
 		orderAsText += adOrder.getCustomerName() + DELIMITER;
@@ -137,9 +153,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		
 	}
 		
-	/* 
-*/
-	/*--Write order into file--*/
+	/*----------------Write order into file------------------------*/
 	private void writeOrder(LocalDate date) {
 		PrintWriter out = null;
 		DateTimeFormatter myFormat = DateTimeFormatter.ofPattern("MMddyyyy");
@@ -156,8 +170,7 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		}
 		String firstLine = "OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
 		out.println(firstLine);
-		
-		
+
 		String orderAsText;
 		List<Order> orderList = this.getCurrentOrdersList();
 		for(Order curOrd : orderList) {
@@ -168,10 +181,46 @@ public class FlooringOrderDaoImpl implements FlooringOrderDao{
 		out.close();
 		
 	}
-
 	
-
-
-
+	/*---------------------------DATA EXPORT------------------------*/
 	
+	private void dataReadWrite() throws FileNotFoundException {
+		Scanner scan = null;
+		PrintWriter out = null;
+		File folder = new File("Orders");
+		File[] listOfFiles = folder.listFiles();
+		
+		// writer
+		try {
+			out = new PrintWriter(new FileWriter(BACKUP_FILE));
+		}catch(IOException e) {
+			if(out == null) {
+                io.print("Could not export data.");
+                return;
+            }
+		}
+		
+		String firstLine = "OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total,OrderDate";
+		out.println(firstLine);
+		
+		for (File file : listOfFiles) {
+			if (file.isFile()) {
+				String fileName = file.getName().replaceAll("\\D+", "");
+				LocalDate fileDate = LocalDate.parse(fileName,DateTimeFormatter.ofPattern("MMddyyyy"));
+				
+				scan = new Scanner(new BufferedReader(new FileReader(file)));
+				scan.nextLine(); // skip first line
+				
+				String currentLine;
+				while (scan.hasNextLine()) {
+					currentLine = scan.nextLine();
+					String orderToPrint = currentLine + DELIMITER + fileDate.toString();
+					out.println(orderToPrint);
+				}	
+			}
+		}
+		out.flush();
+		out.close();
+		scan.close();
+	}
 }

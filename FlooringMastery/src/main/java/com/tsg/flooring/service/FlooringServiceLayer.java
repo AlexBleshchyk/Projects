@@ -1,5 +1,6 @@
 package com.tsg.flooring.service;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,4 +27,8 @@ public interface FlooringServiceLayer {
 	Order editOrder(Integer ordNumber, Order order, LocalDate date) throws NoProductException;
 	
 	boolean replaceEditedOrder(LocalDate date, Integer num, Order order, Character select) throws FlooringPersistenceException;
+	
+	boolean removeOrder(LocalDate date, Integer number, Order order, Character select) throws FlooringPersistenceException;
+	
+	boolean exportData(Character select) throws FlooringPersistenceException, FileNotFoundException;
 }

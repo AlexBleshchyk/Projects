@@ -1,6 +1,5 @@
 package com.tsg.flooring.ui;
 
-import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,7 +21,8 @@ public class FlooringView {
 		this.io = io;
 	}
 	
-	/*--------MAIN MENU------------*/
+	/*-------------------MAIN MENU--------------------------*/
+	
 	public int printMenuGetSelection() {
 		io.print("+----------------------------+");
 		io.print("|    <<Flooring Program>>    |");
@@ -40,16 +40,16 @@ public class FlooringView {
 	
 	/* display +
 	 * add     +
-	 * edit
-	 * remove
-	 * export
+	 * edit    +
+	 * remove  +
+	 * export  +
 	 * */
 	/*-------------------PRINT LIST OF ORDERS-------------------*/
 	public void printOrdersList(List<Order> orderList) {
-		io.print("\nNumber|CustomerName|State|TaxRate|ProductType|  Area|Cost/sq.ft.|LaborCost/sq.ft.|MaterialCost|LaborCost|   Tax|   Total");
-		io.print("------+------------+-----+-------+-----------+------+-----------+----------------+------------+---------+------+--------");
+		io.print("\nNumber|   CustomerName|State|TaxRate|ProductType|  Area|Cost/sq.ft.|LaborCost/sq.ft.|MaterialCost|LaborCost|   Tax|   Total");
+		io.print("------+---------------+-----+-------+-----------+------+-----------+----------------+------------+---------+------+--------");
 		for(Order currentOrder : orderList) {
-			String orderInfo = String.format("%6s|%12s|%5s|%7s|%11s|%6s|%11s|%16s|%12s|%9s|%6s|%8s",
+			String orderInfo = String.format("%6s|%15s|%5s|%7s|%11s|%6s|%11s|%16s|%12s|%9s|%6s|%8s",
 					currentOrder.getOrderNumber(),
 					currentOrder.getCustomerName(),
 					currentOrder.getState(),
@@ -64,7 +64,7 @@ public class FlooringView {
 					currentOrder.getTotal());
 			
 			io.print(orderInfo);
-			io.print("------+------------+-----+-------+-----------+------+-----------+----------------+------------+---------+------+--------");
+			io.print("------+---------------+-----+-------+-----------+------+-----------+----------------+------------+---------+------+--------");
 			
 		}
 	}
@@ -92,12 +92,11 @@ public class FlooringView {
 		io.print("------+------------+-----+-------+-----------+------+-----------+----------------+------------+---------+------+--------");
 			
 	}
-
-
 	
 	/*---------------------PRINT LIST oF PRODUCT-------------------------------*/
 	
 	public void printProductList(List<Product> productList) {
+		io.print("\nThe available product types (with costs):");
 		io.print("\nProduct Type | Cost/sq.ft. |  Labor_Cost/sq.ft. |");
 		io.print("-------------+-------------+---------------------");
 		for(Product currentProduct : productList) {
@@ -110,7 +109,7 @@ public class FlooringView {
 		io.print("-------------+-------------+---------------------");
 	}
 	
-	/*--------------PRINT LIST oF tax---------------------*/
+	/*--------------PRINT LIST OF tax---------------------*/
 	
 	public void printTaxList(List<Tax> taxList) {
 		io.print("\nState | State Name | Tax Rate |");
@@ -124,11 +123,11 @@ public class FlooringView {
 		}
 	}
 	
-	/*---print available States*/
+	/*----------print available States----------------*/
 	public void printAvailableStates(List<Tax> taxList) {
-		io.print("Available for this States:");
+		io.print("\nAvailable for this States:");
 		for(Tax currentTax : taxList) {
-			String productInfo = String.format("%1s , %s", currentTax.getState(), currentTax.getStateName());
+			String productInfo = String.format("%-10s  %-3s", currentTax.getStateName(), currentTax.getState());
 			io.print(productInfo);
 		}
 	}
@@ -138,7 +137,10 @@ public class FlooringView {
 	
 	public Order getNewOrderInfo(List<Product> prod, List<Tax> tax) throws NoStateException {
 		// name
-		String customerName = io.readString("Please enter name");
+		String customerName = "";
+		do {
+			customerName = io.readString("Enter customer name");
+		}while(customerName.isBlank());
 		// state
 		String state = null;
 		List<String> states = new ArrayList<>() ;
@@ -146,7 +148,7 @@ public class FlooringView {
 			states.add(currentTax.getState());
 		}
 		do {
-			state = io.readString("Please enter state(abbreviation)");
+			state = io.readString("Enter the state abbreviation");
 		}while(!states.contains(state.toUpperCase()));
 		//product type
 		String productType;
@@ -155,12 +157,12 @@ public class FlooringView {
 			products.add(currentProduct.getProductType());
 		}
 		do {
-			productType = io.readString("Please enter type of product");
+			productType = io.readString("Enter type of product");
 		}while(!products.contains(productType));
 		
 		
 		// area
-		BigDecimal area = io.readBigDecimal("Please enter area(min 100 sq.ft.)", new BigDecimal("100"));
+		BigDecimal area = io.readBigDecimal("Enter the area (min 100 sq.ft.)", new BigDecimal("100"));
 		Order currentOrder = new Order();
 		currentOrder.setCustomerName(customerName);
 		currentOrder.setState(state.toUpperCase());
@@ -173,11 +175,11 @@ public class FlooringView {
 		
 	/*------------------------GET INFO FOR EDIT ORDER-------------------------------*/
 	
-	public Order getEditOrderInfo(Order order, List<Product> prod, List<Tax> tax, KeyEvent k) throws NoStateException {
+	public Order getEditOrderInfo(Order order, List<Product> prod, List<Tax> tax) throws NoStateException {
 		Order currentOrder = order;
 		// name
-		String customerName = io.readString("Please enter name");
-		if (customerName != "") {
+		String customerName = io.readString("Enter customer name("+ currentOrder.getCustomerName() + ")");
+		if (!customerName.isBlank()) {
 			currentOrder.setCustomerName(customerName);
 		}
 		
@@ -188,7 +190,11 @@ public class FlooringView {
 			states.add(currentTax.getState());
 		}
 		do {
-			state = io.readString("Please enter state(abbreviation)");
+			state = io.readString("Please enter state abbreviation (" + currentOrder.getState() + ")");
+			if(state.isBlank()) {
+				state = currentOrder.getState();
+				break;
+			}
 		}while(!states.contains(state.toUpperCase()));
 		currentOrder.setState(state.toUpperCase());
 		
@@ -199,19 +205,27 @@ public class FlooringView {
 			products.add(currentProduct.getProductType());
 		}
 		do {
-			productType = io.readString("Please enter type of product");
+			productType = io.readString("Please enter type of product(" + currentOrder.getProductType() + ")");
+			if(productType.isBlank()) {
+				productType = currentOrder.getProductType();
+				break;
+			}
 		}while(!products.contains(productType));
 		currentOrder.setProductType(productType);
 			
 		// area
-		BigDecimal area = io.readBigDecimal("Please enter area(min 100 sq.ft.)", new BigDecimal("100"));
-		currentOrder.setArea(area);
+		String stringArea = io.readString("Please enter area(min 100 sq.ft.)(" + currentOrder.getArea() + ")");
+		if(!stringArea.isBlank()) {
+			BigDecimal area = new BigDecimal(stringArea);
+			currentOrder.setArea(area);
+		}
+		
 		
 		return currentOrder;
 	}
 	
-	
-	/*--GET Selection for Place Order--*/
+	/*---------------------------------------------------SELECTIONS / CONFIRMATIONS----------------------------------------------*/
+	/*--get Selection for Place Order--*/
 	public Character getSelectionPlaceOrder() {
 		Character c;
 		do {
@@ -220,15 +234,34 @@ public class FlooringView {
 		return c;
 	}
 	
-	/*--GET Selection for Edit Order--*/
+	/*--get Selection for Edit Order--*/
 	public Character getSelectionEditOrder() {
 		Character c;
 		do {
-			c = io.readChar("Do you want to edit your order?[Y/n]");
+			c = io.readChar("Do you want to edit this order?[Y/n]");
 		}while((!c.equals('y'))&&(!c.equals('Y'))&&(!c.equals('n'))&&(!c.equals('N')));
 		return c;
 	}
 	
+	/*------get selection for REMOVE order------*/
+	public Character getSelectionRemoveOrder() {
+		Character c;
+		do {
+			c = io.readChar("Do you want to remove this order?[Y/n]");
+		}while((!c.equals('y'))&&(!c.equals('Y'))&&(!c.equals('n'))&&(!c.equals('N')));
+		return c;
+	}
+	
+	/*---------data export confirmation--------------*/
+	public Character getExportConfirmation() {
+		Character c;
+		do {
+			c = io.readChar("Do you want to export data?[Y/n]");
+		}while((!c.equals('y'))&&(!c.equals('Y'))&&(!c.equals('n'))&&(!c.equals('N')));
+		return c;
+	}
+	
+	/*------------------------------------------------ASKS: DATE, ORDER NUMBER---------------------------*/
 	/*---GET Date of Orders--- */
 	public LocalDate dateOfOrder() {
 		return io.readLocalDate("\nEnter date[yyyy-MM-dd]");
@@ -240,27 +273,52 @@ public class FlooringView {
 	
 	/*-----get ORDER NUMBER------*/
 	public Integer orderNumber() {
-		return io.readInt("\n Which Order would you like to edit?");
+		return io.readInt("\n Which order would you like to edit?");
 	}
 	
+	public Integer orderRemoveNumber() {
+		return io.readInt("\n Which order would you like to remove?");
+	}
+	
+	
+	/*----------------------------------------------------RESULTS-----------------------------------------------------*/
 	/*----PRINT ORDER ADDING RESULT-----*/
 	public void printAddingResult(boolean result) {
 		if(result) {
-			io.print("Your order was successfully placed.");
+			io.print("\nYour order was successfully placed.");
 		}else {
-			io.print("The operation was cancelled by the user.");
+			io.print("\nThe operation was cancelled by the user.");
 		}
 	}
 	
 	/*----PRINT ORDER EDITING RESULT-----*/
 	public void printEditingResult(boolean result) {
 		if(result) {
-			io.print("Your order was successfully edited.");
+			io.print("\nYour order was successfully edited.");
 		}else {
-			io.print("The operation was cancelled by the user.");
+			io.print("\nThe operation was cancelled by the user.");
 		}
-	} 
+	}
 	
+	/*----PRINT ORDER REMOVING RESULT-----*/
+	public void printRemovingResult(boolean result) {
+		if(result) {
+			io.print("\nYour order was successfully removed.");
+		}else {
+			io.print("\nThe operation was cancelled by the user.");
+		}
+	}
+	
+	/*------DATA EXPORT CONFIRMATION -----------------*/
+	public void printDataExportResult(boolean result) {
+		if(result) {
+			io.print("\nYour data was successfully exported.");
+		}else {
+			io.print("\nThe operation was cancelled by the user.");
+		}
+	}
+	
+	/*------------------------------------------------MESSAGES--------------------------------------------------------*/
 	/*-------print msg PRESS ENTER FOR CONTINUE----*/
 	public void printWait() {
 		io.print(" ");
