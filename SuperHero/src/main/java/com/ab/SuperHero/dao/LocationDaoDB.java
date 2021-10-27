@@ -40,7 +40,7 @@ public class LocationDaoDB implements LocationDao{
 
 	@Override
 	public void updateLocation(Location location) {
-		final String UPDATE_LOCATION = "UPDATE Location SET"
+		final String UPDATE_LOCATION = "UPDATE Location SET "
 				+ "locationName = ?, street = ?, city = ?, zip = ?,"
 				+ "locationDescription = ?, latitude = ?, longitude = ?"
 				+ "WHERE locationId = ?";
@@ -77,6 +77,15 @@ public class LocationDaoDB implements LocationDao{
 		return jdbc.query(SELECT_ALL_LOCATIONS, new LocationMapper());
 	}
 
+	@Override
+	public List<Location> getAllLocationsByHero(int heroId) {
+		final String SELECT_LOCATION_BY_HERO = "SELECT * FROM Location l "
+				+ "JOIN heroSighting hs "
+				+ "ON hs.Sighting_Location_locationId = l.locationId "
+				+ "WHERE Hero_heroId = ?";
+		return jdbc.query(SELECT_LOCATION_BY_HERO, new LocationMapper(), heroId);
+	}
+
 	
 	public static final class LocationMapper implements RowMapper<Location>{
 
@@ -95,6 +104,7 @@ public class LocationDaoDB implements LocationDao{
 		}
 		
 	}
+
 
 	
 }

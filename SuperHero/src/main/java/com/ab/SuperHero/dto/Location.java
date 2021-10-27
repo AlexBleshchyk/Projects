@@ -61,10 +61,10 @@ public class Location {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-	@Override
-	public int hashCode() {
-		return Objects.hash(city, description, latitude, locationId, locationName, longitude, street, zip);
-	}
+//	@Override
+//	public int hashCode() {
+//		return Objects.hash(city, description, latitude, locationId, locationName, longitude, street, zip);
+//	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

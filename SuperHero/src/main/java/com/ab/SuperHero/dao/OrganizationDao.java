@@ -13,6 +13,8 @@ public interface OrganizationDao {
 	void deleteOrganization(int organizationId);
 
 	Organization getOrganizationById(int organizationId);
+	
+	Organization getOrganizationByName(String organizationName);
 
 	List<Organization> getAllOrganization();
 

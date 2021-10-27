@@ -11,6 +11,7 @@ public class Organization {
 	private String description;
 	private int membersNumber;
 	private int locationId;
+	private int heroId;
 	private List<Hero> heroes;
 	
 	public int getOrganizationId() {
@@ -49,6 +50,12 @@ public class Organization {
 	public void setLocationId(int locationId) {
 		this.locationId = locationId;
 	}
+	public int getHeroId() {
+		return heroId;
+	}
+	public void setHeroId(int heroId) {
+		this.heroId = heroId;
+	}
 	public List<Hero> getHeroes() {
 		return heroes;
 	}
@@ -57,7 +64,8 @@ public class Organization {
 	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(contact, description, heroes, locationId, membersNumber, organizationId, organizationName);
+		return Objects.hash(contact, description, heroId, heroes, locationId, membersNumber, organizationId,
+				organizationName);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -69,9 +77,10 @@ public class Organization {
 			return false;
 		Organization other = (Organization) obj;
 		return Objects.equals(contact, other.contact) && Objects.equals(description, other.description)
-				&& Objects.equals(heroes, other.heroes) && Objects.equals(locationId, other.locationId)
+				&& heroId == other.heroId && Objects.equals(heroes, other.heroes) && locationId == other.locationId
 				&& membersNumber == other.membersNumber && organizationId == other.organizationId
 				&& Objects.equals(organizationName, other.organizationName);
 	}
+	
 	
 }

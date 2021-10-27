@@ -23,7 +23,7 @@ public class OrganizationDaoDB implements OrganizationDao{
 	@Override
 	@Transactional
 	public Organization addOrganization(Organization organization) {
-		final String INSERT_ORGANIZATION = "INSERT INTO Organization"
+		final String INSERT_ORGANIZATION = "INSERT INTO Organization "
 				+ "(organizationName, contact, organizationDescription, membersNumber, Location_locationId)"
 				+ "VALUES(?,?,?,?,?)";
 		jdbc.update(INSERT_ORGANIZATION,
@@ -38,19 +38,22 @@ public class OrganizationDaoDB implements OrganizationDao{
 		return organization;
 	}
 	private void insertOrganizationHero(Organization organization) {
-		final String INSERT_ORGANIZATION_HERO = "INSERT INTO"
-				+ "organizationHero(Hero_heroId, Organization_organizationId) VALUES(?,?)";
-		for(Hero hero : organization.getHeroes()) {
-			jdbc.update(INSERT_ORGANIZATION_HERO,
-					hero.getHeroId(),
-					organization.getOrganizationId());
+		final String INSERT_ORGANIZATION_HERO = "INSERT INTO "
+				+ "organizationHero(Organization_organizationId, Hero_heroId) VALUES(?,?)";
+		
+		if(organization.getHeroes() != null) {
+			for(Hero hero : organization.getHeroes()) {
+					jdbc.update(INSERT_ORGANIZATION_HERO,
+							organization.getOrganizationId(),
+							hero.getHeroId());
+			}
 		}
 	}
 	
 	@Override
 	@Transactional
 	public void updateOrganization(Organization organization) {
-		final String UPDATE_ORGANIZATION = "UPDATE Organization SET"
+		final String UPDATE_ORGANIZATION = "UPDATE Organization SET "
 				+ "organizationName = ?, contact = ?, "
 				+ "organizationDescription = ?, membersNumber = ?, "
 				+ "Location_locationId = ? WHERE organizationId = ?";
@@ -62,7 +65,7 @@ public class OrganizationDaoDB implements OrganizationDao{
 				organization.getLocationId(),
 				organization.getOrganizationId());
 		final String DELETE_ORGANIZATION_HERO = "DELETE FROM organizationHero "
-				+ "WHERE organizationId = ?";
+				+ "WHERE Organization_organizationId = ?";
 		jdbc.update(DELETE_ORGANIZATION_HERO, organization.getOrganizationId());
 		insertOrganizationHero(organization);
 	}
@@ -71,7 +74,7 @@ public class OrganizationDaoDB implements OrganizationDao{
 	@Transactional
 	public void deleteOrganization(int organizationId) {
 		final String DELETE_ORGANIZATION_HERO = "DELETE FROM organizationHero "
-				+ "WHERE organizationId = ?";
+				+ "WHERE Organization_organizationId = ?";
 		jdbc.update(DELETE_ORGANIZATION_HERO, organizationId);
 		final String DELETE_ORGANIZATION = "DELETE FROM Organization WHERE organizationId = ?";
 		jdbc.update(DELETE_ORGANIZATION, organizationId);
@@ -82,6 +85,16 @@ public class OrganizationDaoDB implements OrganizationDao{
 		try {
 			final String SELECT_ORGANIZATION_BY_ID = "SELECT * FROM Organization WHERE organizationId = ?";
 			return jdbc.queryForObject(SELECT_ORGANIZATION_BY_ID, new OrganizationMapper(), organizationId);
+		}catch(DataAccessException ex) {
+			return null;
+		} 
+	}
+	
+	@Override
+	public Organization getOrganizationByName(String organizationName) {
+		try {
+			final String SELECT_ORGANIZATION_BY_NAME = "SELECT * FROM Organization WHERE organizationName LIKE ?";
+			return jdbc.queryForObject(SELECT_ORGANIZATION_BY_NAME, new OrganizationMapper(), organizationName);
 		}catch(DataAccessException ex) {
 			return null;
 		}
@@ -95,9 +108,9 @@ public class OrganizationDaoDB implements OrganizationDao{
 
 	@Override
 	public List<Organization> getAllOrganizationByHero(int heroId) {
-		final String SELECT_ORGANIZATION_BY_HERO = "SELECT * FROM Organization o"
-				+ "JOIN organizationHero oh"
-				+ "ON oh.Organization_organizationId = o.organizationId"
+		final String SELECT_ORGANIZATION_BY_HERO = "SELECT * FROM Organization o "
+				+ "JOIN organizationHero oh "
+				+ "ON oh.Organization_organizationId = o.organizationId "
 				+ "WHERE oh.Hero_heroId = ?";
 		return jdbc.query(SELECT_ORGANIZATION_BY_HERO, new OrganizationMapper(), heroId);
 	}
@@ -123,6 +136,8 @@ public class OrganizationDaoDB implements OrganizationDao{
 		}
 		
 	}
+
+
 	
 	
 	

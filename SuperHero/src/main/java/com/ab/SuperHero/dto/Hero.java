@@ -10,6 +10,7 @@ public class Hero {
 	private String heroDescription;
 	private boolean isHero;
 	private int superPowerId;
+	private int organizationId;
 	private List<Organization> organizations;
 	private List<Sighting> sightings;
 	
@@ -43,6 +44,7 @@ public class Hero {
 	public void setSuperPowerId(int superPowerId) {
 		this.superPowerId = superPowerId;
 	}
+	
 	public List<Organization> getOrganizations() {
 		return organizations;
 	}
@@ -55,9 +57,17 @@ public class Hero {
 	public void setSightings(List<Sighting> sightings) {
 		this.sightings = sightings;
 	}
+	
+	public int getOrganizationId() {
+		return organizationId;
+	}
+	public void setOrganizationId(int organizationId) {
+		this.organizationId = organizationId;
+	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(heroDescription, heroId, heroName, isHero, organizations, sightings, superPowerId);
+		return Objects.hash(heroDescription, heroId, heroName, isHero, organizationId, organizations, sightings,
+				superPowerId);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -70,9 +80,10 @@ public class Hero {
 		Hero other = (Hero) obj;
 		return Objects.equals(heroDescription, other.heroDescription) && heroId == other.heroId
 				&& Objects.equals(heroName, other.heroName) && isHero == other.isHero
-				&& Objects.equals(organizations, other.organizations) && Objects.equals(sightings, other.sightings)
-				&& Objects.equals(superPowerId, other.superPowerId);
+				&& organizationId == other.organizationId && Objects.equals(organizations, other.organizations)
+				&& Objects.equals(sightings, other.sightings) && superPowerId == other.superPowerId;
 	}
+	
 	
 	
 	

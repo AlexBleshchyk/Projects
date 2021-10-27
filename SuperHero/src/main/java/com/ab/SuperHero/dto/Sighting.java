@@ -35,10 +35,10 @@ public class Sighting {
 	public void setHeroes(List<Hero> heroes) {
 		this.heroes = heroes;
 	}
-	@Override
-	public int hashCode() {
-		return Objects.hash(date, heroes, locationId, sightingId);
-	}
+//	@Override
+//	public int hashCode() {
+//		return Objects.hash(date, heroes, locationId, sightingId);
+//	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

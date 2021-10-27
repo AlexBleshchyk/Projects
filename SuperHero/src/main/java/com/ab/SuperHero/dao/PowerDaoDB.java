@@ -22,7 +22,7 @@ public class PowerDaoDB implements PowerDao {
 	@Override
 	@Transactional
 	public Power addPower(Power power) {
-		final String INSERT_POWER = "INSERT INTO Power("
+		final String INSERT_POWER = "INSERT INTO SuperPower("
 				+ "superPowerName,superPowerDescription) VALUES(?,?)";
 		jdbc.update(INSERT_POWER,
 				power.getPowerName(),
@@ -34,7 +34,7 @@ public class PowerDaoDB implements PowerDao {
 
 	@Override
 	public void updatePower(Power power) {
-		final String UPDATE_POWER = "UPDATE Power SET"
+		final String UPDATE_POWER = "UPDATE SuperPower SET "
 				+ "superPowerName = ?,"
 				+ "superPowerDescription = ? "
 				+ "WHERE superPowerId = ?";
@@ -46,14 +46,14 @@ public class PowerDaoDB implements PowerDao {
 
 	@Override
 	public void deletePower(int powerId) {
-		final String DELETE_POWER = "DELETE FROM Power WHERE superPowerId = ?";
+		final String DELETE_POWER = "DELETE FROM SuperPower WHERE superPowerId = ?";
 		jdbc.update(DELETE_POWER, powerId);
 	}
 
 	@Override
 	public Power getPowerById(int powerId) {
 		try {
-			final String SELECT_POWER_BY_ID = "SELECT * FROM Power WHERE superPowerId = ?";
+			final String SELECT_POWER_BY_ID = "SELECT * FROM SuperPower WHERE superPowerId = ?";
 			return jdbc.queryForObject(SELECT_POWER_BY_ID, new PowerMapper(), powerId);
 		}catch(DataAccessException ex) {
 			return null;
@@ -62,13 +62,13 @@ public class PowerDaoDB implements PowerDao {
 
 	@Override
 	public List<Power> getAllPower() {
-		final String SELECT_ALL_POWERS = "SELECT * FROM Power";
+		final String SELECT_ALL_POWERS = "SELECT * FROM SuperPower";
 		return jdbc.query(SELECT_ALL_POWERS, new PowerMapper());
 	}
 
 	@Override
 	public List<Power> getAllPowerByHero(int heroId) {
-		final String SELECT_POWER_BY_HERO = "SELECT * FROM Power p"
+		final String SELECT_POWER_BY_HERO = "SELECT * FROM SuperPower p "
 				+ "JOIN Hero h ON h.SuperPower_superPowerId = p.superPowerId "
 				+ "WHERE heroId = ?";
 		return jdbc.query(SELECT_POWER_BY_HERO, new PowerMapper(), heroId);

@@ -19,7 +19,5 @@ public interface HeroDao {
 	List<Hero> getAllHeroesByPower(int powerId);
 	
 	List<Hero> getAllHeroesByOrganization(int organizationId);
-	
-	List<Hero> getAllHeroesBySighting(int sightingId);
 		
 }

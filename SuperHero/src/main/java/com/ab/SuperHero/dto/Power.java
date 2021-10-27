@@ -26,10 +26,10 @@ public class Power {
 	public void setPowerDescription(String powerDescription) {
 		this.powerDescription = powerDescription;
 	}
-	@Override
-	public int hashCode() {
-		return Objects.hash(powerDescription, powerId, powerName);
-	}
+//	@Override
+//	public int hashCode() {
+//		return Objects.hash(powerDescription, powerId, powerName);
+//	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -16,4 +16,6 @@ public interface LocationDao {
 
 	List<Location> getAllLocation();
 	
+	List<Location> getAllLocationsByHero(int heroId);
+	
 }

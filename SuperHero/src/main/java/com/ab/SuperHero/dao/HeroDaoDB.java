@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ab.SuperHero.dto.Hero;
 import com.ab.SuperHero.dto.Organization;
-import com.ab.SuperHero.dto.Sighting;
+
 
 @Repository
 public class HeroDaoDB implements HeroDao{
@@ -34,32 +34,40 @@ public class HeroDaoDB implements HeroDao{
 		int newId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
 		hero.setHeroId(newId);
 		insertOrganizationHero(hero);
-		insertHeroSighting(hero);
+		//insertHeroSighting(hero);
 		return hero;
 	}
 	private void insertOrganizationHero(Hero hero) {
-		final String INSERT_ORGANIZATION_HERO = "INSERT INTO"
-				+ "organizationHero(Hero_heroId, Organization_organizationId) VALUES(?,?)";
+		final String INSERT_ORGANIZATION_HERO = "INSERT INTO "
+				+ "organizationHero(Organization_organizationId, Hero_heroId) VALUES(?,?)";
+		
 		for(Organization organization : hero.getOrganizations()) {
 			jdbc.update(INSERT_ORGANIZATION_HERO,
-					hero.getHeroId(),
-					organization.getOrganizationId());
+					organization.getOrganizationId(),
+					hero.getHeroId());
 		}
 	}
-	private void insertHeroSighting(Hero hero) {
-		final String INSERT_HERO_SIGHTING = "INSERT INTO"
-				+ "heroSighting(Hero_heroId, Sighting_sightingId) VALUES(?,?)";
-		for(Sighting sighting : hero.getSightings()) {
-			jdbc.update(INSERT_HERO_SIGHTING,
-					hero.getHeroId(),
-					sighting.getSightingId());
-		}
-	}
+//	private void insertHeroSighting(Hero hero) {
+//		final String INSERT_HERO_SIGHTING = "INSERT INTO "
+//				+ "heroSighting(Hero_heroId, Sighting_sightingId, Sighting_Location_locationId) VALUES(?,?,?)";
+//		for(Sighting sighting : hero.getSightings()) {
+//			jdbc.update(INSERT_HERO_SIGHTING,
+//					hero.getHeroId(),
+//					sighting.getSightingId(),
+//					sighting.getLocationId());
+//		}
+//	}
 
 	@Override
 	@Transactional
 	public void updateHero(Hero hero) {
-		final String UPDATE_HERO = "UPDATE Hero SET"
+		final String DELETE_ORGANIZATION_HERO = "DELETE FROM organizationHero "
+				+ "WHERE Hero_heroId = ?";
+//		final String DELETE_HERO_SIGHTING = "DELETE FROM heroSighting "
+//				+ "WHERE Hero_heroId = ?";
+		jdbc.update(DELETE_ORGANIZATION_HERO, hero.getHeroId());
+//		jdbc.update(DELETE_HERO_SIGHTING, hero.getHeroId());
+		final String UPDATE_HERO = "UPDATE Hero SET "
 				+ "heroName = ?, heroDescription = ?, "
 				+ "isHero = ?, SuperPower_superPowerId = ? WHERE heroId = ?";
 		jdbc.update(UPDATE_HERO,
@@ -68,24 +76,19 @@ public class HeroDaoDB implements HeroDao{
 				hero.isHero(),
 				hero.getSuperPowerId(),
 				hero.getHeroId());
-		final String DELETE_ORGANIZATION_HERO = "DELETE FROM organizationHero "
-				+ "WHERE heroId = ?";
-		final String DELETE_HERO_SIGHTING = "DELETE FROM heroSighting "
-				+ "WHERE heroId = ?";
-		jdbc.update(DELETE_ORGANIZATION_HERO, hero.getHeroId());
-		jdbc.update(DELETE_HERO_SIGHTING, hero.getHeroId());
+		
 		insertOrganizationHero(hero);
-		insertHeroSighting(hero);
+		//insertHeroSighting(hero);
 	}
 
 	@Override
 	@Transactional
 	public void deleteHeroById(int heroId) {
 		final String DELETE_ORGANIZATION_HERO = "DELETE FROM organizationHero "
-				+ "WHERE heroId = ?";
+				+ "WHERE Hero_heroId = ?";
 		jdbc.update(DELETE_ORGANIZATION_HERO, heroId);
 		final String DELETE_HERO_SIGHTING = "DELETE FROM heroSighting "
-				+ "WHERE heroId = ?";
+				+ "WHERE Hero_heroId = ?";
 		jdbc.update(DELETE_HERO_SIGHTING, heroId);
 		final String DELETE_HERO = "DELETE FROM Hero WHERE heroId = ?";
 		jdbc.update(DELETE_HERO, heroId);
@@ -115,21 +118,14 @@ public class HeroDaoDB implements HeroDao{
 
 	@Override
 	public List<Hero> getAllHeroesByOrganization(int organizationId) {
-		final String SELECT_HERO_BY_ORGANIZATION = "SELECT * FROM Hero h"
-				+ "JOIN organizationHero oh"
-				+ "ON oh.Hero_heroId = h.heroId"
+		final String SELECT_HERO_BY_ORGANIZATION = "SELECT * FROM Hero h "
+				+ "JOIN organizationHero oh "
+				+ "ON oh.Hero_heroId = h.heroId "
 				+ "WHERE oh.Organization_organizationId = ?";
 		return jdbc.query(SELECT_HERO_BY_ORGANIZATION, new HeroMapper(), organizationId);
 	}
 
-	@Override
-	public List<Hero> getAllHeroesBySighting(int sightingId) {
-		final String SELECT_HERO_BY_SIGHTING = "SELECT * FROM Hero h"
-				+ "JOIN heroSighting hs"
-				+ "ON hs.Hero_heroId = h.heroId"
-				+ "WHERE hs.Sighting_sightingId = ?";
-		return jdbc.query(SELECT_HERO_BY_SIGHTING, new HeroMapper(), sightingId);
-	}
+
 	
 	public static final class HeroMapper implements RowMapper<Hero>{
 
@@ -145,4 +141,5 @@ public class HeroDaoDB implements HeroDao{
 		}
 		
 	}
+
 }
